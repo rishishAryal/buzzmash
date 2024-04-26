@@ -17,4 +17,4 @@ router.post("/logout", verifyJwt, logout);
 router.put("/changePassword", verifyJwt, changePassword);
 
 module.exports = router;
-q;
+
