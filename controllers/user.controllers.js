@@ -38,6 +38,38 @@ const register = async (req, res) => {
   }
 };
 
+const checkIfUsernameAvailable = async (req, res) => {
+  const { username } = req.body;
+  try {
+    const user = await User.findOne({ username });
+    if (user) {
+      return res
+        .status(400)
+        .json({ message: "Username Already Exists", isAvailable: false });
+    }
+    res.status(200).json({ message: "Username Available", isAvailable: true });
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).send("Error in Saving");
+  }
+};
+
+const checkIfEmailAvailable = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (user) {
+      return res
+        .status(400)
+        .json({ message: "Email Already Exists", isAvailable: false });
+    }
+    res.status(200).json({ message: "Email Available", isAvailable: true });
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).send("Error in Saving");
+  }
+};
+
 const login = async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -95,4 +127,12 @@ const changePassword = async (req, res) => {
     res.json(err);
   }
 };
-module.exports = { register, login, getUserProfile, logout, changePassword };
+module.exports = {
+  register,
+  login,
+  getUserProfile,
+  logout,
+  changePassword,
+  checkIfUsernameAvailable,
+  checkIfEmailAvailable,
+};
