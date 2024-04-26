@@ -71,14 +71,7 @@ const getUserProfile = async (req, res) => {
 };
 const logout = async (req, res) => {
   try {
-    const token = req.headers.authorization;
-    //extracting the token from the header
-    const bearer = token.split(" ");
-    const bearerToken = bearer[1];
-    console.log(bearerToken);
-    const decoded = jwt.verify(bearerToken, "kPGzq3kH48aDGD9N23Fs5T8jYqHb5GXs");
-    //destroying the token
-    const user = await User.findById(decoded.userId);
+    const user = await User.findById(req.userId);
 
     res.status(200).json({ message: "User Logged Out", profile: decoded });
   } catch (err) {
@@ -88,12 +81,7 @@ const logout = async (req, res) => {
 const changePassword = async (req, res) => {
   const { oldPassword, newPassword } = req.body;
   try {
-    const token = req.headers.authorization;
-    //extracting the token from the header
-    const bearer = token.split(" ");
-    const bearerToken = bearer[1];
-    const decoded = jwt.verify(bearerToken, "kPGzq3kH48aDGD9N23Fs5T8jYqHb5GXs");
-    const user = await User.findById(decoded.userId);
+    const user = await User.findById(req.userId);
     const checkPassword = await bcrypt.compare(oldPassword, user.password);
     if (!checkPassword) {
       return res.status(400).json({ message: "Incorrect Password" });
@@ -107,4 +95,4 @@ const changePassword = async (req, res) => {
     res.json(err);
   }
 };
-module.exports = { register, login, getUserProfile, logout };
+module.exports = { register, login, getUserProfile, logout, changePassword };

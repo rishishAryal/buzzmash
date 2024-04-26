@@ -13,7 +13,7 @@ const {
 
 
 router.post("/comment", verifyJwt, createComment);
-router.get("/getAll", verifyJwt, getComments);
+router.get("/getComments/:blogId", verifyJwt, getComments);
 router.delete("/delete/:commentId", verifyJwt, deleteComment);
 router.put("/update/:commentId", verifyJwt, updateComment);
 
