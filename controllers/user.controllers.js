@@ -2,6 +2,7 @@ const User = require("../model/User");
 const bcrypt = require("bcryptjs");
 
 const jwt = require("jsonwebtoken");
+const { trusted } = require("mongoose");
 
 // Register a new user
 const register = async (req, res) => {
@@ -86,7 +87,9 @@ const login = async (req, res) => {
       "kPGzq3kH48aDGD9N23Fs5T8jYqHb5GXs",
       { expiresIn: "1h" }
     );
-    res.status(201).json({ message: "User Login", jwtToken, user: user });
+    res
+      .status(201)
+      .json({ message: "User Login", jwtToken, user: user, success: true });
   } catch (err) {
     console.log(err.message);
     res.status(500).send("Server Error");
