@@ -32,7 +32,12 @@ const register = async (req, res) => {
     );
     res
       .status(201)
-      .json({ message: "User Registered", jwtToken, user: newUser });
+      .json({
+        message: "User Registered",
+        jwtToken,
+        user: newUser,
+        success: true,
+      });
   } catch (err) {
     console.log(err.message);
     res.status(500).send("Error in Saving");
