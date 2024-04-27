@@ -21,3 +21,7 @@ app.use("/api/v1/blog", commentRouter);
 app.use("*", (req, res, next) => {
   res.status(404).json({ error: "Not found" });
 });
+
+app.listen(3000, () => {
+  console.log("Server is running on port 3000");
+});
