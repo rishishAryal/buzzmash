@@ -16,5 +16,5 @@ router.get("/getAll", verifyJwt, getBlogs);
 router.get("/get/:slug", verifyJwt, getBlog);
 router.delete("/delete/:id", verifyJwt, deleteBlog);
 router.put("/update/:id", verifyJwt, updateBlog);
-router, get("/getBlogFeed", getBlogs);
+router.get("/getBlogFeed", getBlogs);
 module.exports = router;
