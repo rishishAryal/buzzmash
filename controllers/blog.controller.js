@@ -126,7 +126,7 @@ const updateBlog = async (req, res) => {
     res.status(500).send("Server Error");
   }
 };
-const getCategory = async (req, res) => {
+const getBlogCategory = async (req, res) => {
   try {
     const categories = await Category.find();
     res.status(200).json({
@@ -145,5 +145,5 @@ module.exports = {
   getBlog,
   deleteBlog,
   updateBlog,
-  getCategory,
+  getBlogCategory,
 };
