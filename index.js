@@ -9,9 +9,7 @@ const likeRouter = require("./route/like");
 const commentRouter = require("./route/comment");
 
 connectDB();
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
-});
+
 app.use(cors());
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/blog", blogRouter);
