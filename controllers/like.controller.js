@@ -24,7 +24,9 @@ const likeBlog = async (req, res) => {
     res.status(200).json({ message: "Blog Liked", success: true });
   } catch (err) {
     console.log(err.message);
-    res.status(500).send("Server Error");
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: err.message });
   }
 };
 

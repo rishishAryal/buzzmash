@@ -32,7 +32,9 @@ const createBlog = async (req, res) => {
   try {
   } catch (err) {
     console.log(err.message);
-    res.status(500).send("Server Error");
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: err.message });
   }
 };
 
@@ -42,7 +44,9 @@ const getBlogs = async (_req, res) => {
     res.status(200).json({ message: "All Blogs", blogs: blogs, success: true });
   } catch (err) {
     console.log(err.message);
-    res.status(500).send("Server Error");
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: err.message });
   }
 };
 const getBlog = async (req, res) => {
@@ -55,7 +59,9 @@ const getBlog = async (req, res) => {
       .json({ message: "Blog fetched", blog: blog, success: true });
   } catch (err) {
     console.log(err.message);
-    res.status(500).send("Server Error");
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: err.message });
   }
 };
 
@@ -80,7 +86,9 @@ const deleteBlog = async (req, res) => {
     res.status(200).json({ message: "Blog Deleted", success: true, deletBlog });
   } catch (err) {
     console.log(err.message);
-    res.status(500).send("Server Error");
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: err.message });
   }
 };
 
@@ -123,7 +131,9 @@ const updateBlog = async (req, res) => {
     }
   } catch (err) {
     console.log(err.message);
-    res.status(500).send("Server Error");
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: err.message });
   }
 };
 const getBlogCategory = async (req, res) => {
@@ -136,7 +146,9 @@ const getBlogCategory = async (req, res) => {
     });
   } catch (err) {
     console.log(err.message);
-    res.status(500).send("Server Error");
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: err.message });
   }
 };
 module.exports = {

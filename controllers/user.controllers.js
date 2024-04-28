@@ -30,17 +30,17 @@ const register = async (req, res) => {
       "kPGzq3kH48aDGD9N23Fs5T8jYqHb5GXs",
       { expiresIn: "1h" }
     );
-    res
-      .status(201)
-      .json({
-        message: "User Registered",
-        jwtToken,
-        user: newUser,
-        success: true,
-      });
+    res.status(201).json({
+      message: "User Registered",
+      jwtToken,
+      user: newUser,
+      success: true,
+    });
   } catch (err) {
     console.log(err.message);
-    res.status(500).send("Error in Saving");
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: err.message });
   }
 };
 
@@ -56,7 +56,9 @@ const checkIfUsernameAvailable = async (req, res) => {
     res.status(200).json({ message: "Username Available", isAvailable: true });
   } catch (err) {
     console.log(err.message);
-    res.status(500).send("Error in Saving");
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: err.message });
   }
 };
 
@@ -72,7 +74,9 @@ const checkIfEmailAvailable = async (req, res) => {
     res.status(200).json({ message: "Email Available", isAvailable: true });
   } catch (err) {
     console.log(err.message);
-    res.status(500).send("Error in Saving");
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: err.message });
   }
 };
 
@@ -97,7 +101,9 @@ const login = async (req, res) => {
       .json({ message: "User Login", jwtToken, user: user, success: true });
   } catch (err) {
     console.log(err.message);
-    res.status(500).send("Server Error");
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: err.message });
   }
 };
 
@@ -115,7 +121,9 @@ const logout = async (req, res) => {
 
     res.status(200).json({ message: "User Logged Out", profile: decoded });
   } catch (err) {
-    res.json(err);
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: err.message });
   }
 };
 const changePassword = async (req, res) => {
@@ -132,7 +140,9 @@ const changePassword = async (req, res) => {
     await user.save();
     res.status(200).json({ message: "Password Changed" });
   } catch (err) {
-    res.json(err);
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: err.message });
   }
 };
 module.exports = {

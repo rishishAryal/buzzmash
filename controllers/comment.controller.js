@@ -28,7 +28,9 @@ const createComment = async (req, res) => {
     });
   } catch (err) {
     console.log(err.message);
-    res.status(500).send("Server Error");
+    res
+    .status(500)
+    .json({ message: "Internal Server Error", error: err.message });
   }
 };
 
@@ -48,7 +50,9 @@ const getComments = async (req, res) => {
     });
   } catch (err) {
     console.log(err.message);
-    res.status(500).send("Server Error");
+    res
+    .status(500)
+    .json({ message: "Internal Server Error", error: err.message });
   }
 };
 
@@ -69,7 +73,9 @@ const deleteComment = async (req, res) => {
     res.status(200).json({ message: "Comment Deleted", success: true });
   } catch (err) {
     console.log(err.message);
-    res.status(500).send("Server Error");
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: err.message });
   }
 };
 
@@ -89,7 +95,9 @@ const updateComment = async (req, res) => {
     res.status(200).json({ message: "Comment Updated", success: true });
   } catch (err) {
     console.log(err.message);
-    res.status(500).send("Server Error");
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: err.message });
   }
 };
 
