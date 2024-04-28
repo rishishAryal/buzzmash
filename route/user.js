@@ -9,6 +9,7 @@ const {
   changePassword,
   checkIfUsernameAvailable,
   checkIfEmailAvailable,
+  updateUserDetails,
 } = require("../controllers/user.controllers");
 const verifyJwt = require("../middleware/verifyJwt");
 
@@ -19,5 +20,6 @@ router.post("/logout", verifyJwt, logout);
 router.put("/changePassword", verifyJwt, changePassword);
 router.post("/checkUsername", checkIfUsernameAvailable);
 router.post("/checkEmail", checkIfEmailAvailable);
+router.put("/updateProfile", verifyJwt, updateUserDetails);
 
 module.exports = router;

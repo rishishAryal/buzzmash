@@ -145,6 +145,30 @@ const changePassword = async (req, res) => {
       .json({ message: "Internal Server Error", error: err.message });
   }
 };
+
+const updateUserDetails = async (req, res) => {
+  const { name, username, profile, instagram, twitter, facebook } = req.body;
+  try {
+    const user = await User.findById(req.userId);
+    user.name = name || user.name;
+    user.username = username || user.username;
+    user.profilePicture = profile || user.profilePicture;
+    user.instagram = instagram || user.instagram;
+    user.twitter = twitter || user.twitter;
+    user.facebook = facebook || user.facebook;
+    user.DOB = user.DOB;
+    user.email = user.email;
+
+    await user.save();
+    res
+      .status(200)
+      .json({ message: "User Details Updated", user: user, success: true });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: err.message });
+  }
+};
 module.exports = {
   register,
   login,
@@ -153,4 +177,5 @@ module.exports = {
   changePassword,
   checkIfUsernameAvailable,
   checkIfEmailAvailable,
+  updateUserDetails,
 };
