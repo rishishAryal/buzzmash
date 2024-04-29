@@ -169,6 +169,25 @@ const updateUserDetails = async (req, res) => {
       .json({ message: "Internal Server Error", error: err.message });
   }
 };
+
+const checkifLogin = async (req, res) => {
+  const token = req.header("Authorization");
+  const bearer = token.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({ message: "Auth Error", login: false });
+  }
+  try {
+    const decoded = jwt.verify(bearer, "kPGzq3kH48aDGD9N23Fs5T8jYqHb5GXs");
+    req.userId = decoded.userId;
+    return res.status(200).json({ message: "Token is valid", login: true });
+  } catch (err) {
+    console.log(err.message);
+
+    return res
+      .status(500)
+      .json({ message: "Token is not valid", login: false });
+  }
+};
 module.exports = {
   register,
   login,
@@ -178,4 +197,5 @@ module.exports = {
   checkIfUsernameAvailable,
   checkIfEmailAvailable,
   updateUserDetails,
+  checkifLogin
 };
