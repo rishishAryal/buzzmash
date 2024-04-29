@@ -8,6 +8,8 @@ const {
   deleteBlog,
   updateBlog,
   getBlogCategory,
+  getUserBlog,
+  getBlogByCategory,
 } = require("../controllers/blog.controller");
 const verifyJwt = require("../middleware/verifyJwt");
 
@@ -17,6 +19,8 @@ router.get("/get/:slug", verifyJwt, getBlog);
 router.delete("/delete/:id", verifyJwt, deleteBlog);
 router.put("/update/:id", verifyJwt, updateBlog);
 router.get("/getBlogFeed", getBlogs);
-router.get("/getCategory",getBlogCategory);
+router.get("/getCategory", getBlogCategory);
+router.get("/getUserBlogs", verifyJwt, getUserBlog);
+router.get("/getBlogByCategory", getBlogByCategory);
 
 module.exports = router;

@@ -1,6 +1,7 @@
 const Blog = require("../model/Blog");
 const User = require("../model/User");
 const Category = require("../model/Category");
+const { get } = require("http");
 
 const createBlog = async (req, res) => {
   const { title, description, category } = req.body;
@@ -151,6 +152,39 @@ const getBlogCategory = async (req, res) => {
       .json({ message: "Internal Server Error", error: err.message });
   }
 };
+
+const getUserBlog = async (req, res) => {
+  const id = req.userId;
+  try {
+    const blogs = await Blog.find({ userId: id });
+    res.status(200).json({ message: "All Blogs", blogs: blogs, success: true });
+  } catch (err) {
+    console.log(err.message);
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: err.message });
+  }
+};
+
+const getBlogByCategory = async (req, res) => {
+  const { category } = req.body;
+
+  try {
+    const blogs = await Blog.find({ category: category });
+    const count = blogs.length;
+    res.status(200).json({
+      message: "All Blogs",
+      blogs: blogs,
+      count: count,
+      success: true,
+    });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: err.message });
+  }
+};
+
 module.exports = {
   createBlog,
   getBlogs,
@@ -158,4 +192,6 @@ module.exports = {
   deleteBlog,
   updateBlog,
   getBlogCategory,
+  getUserBlog,
+  getBlogByCategory,
 };
