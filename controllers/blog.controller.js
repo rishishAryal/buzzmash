@@ -84,7 +84,7 @@ const deleteBlog = async (req, res) => {
         .json({ message: "Blog Not Found", success: false });
     }
 
-    res.status(200).json({ message: "Blog Deleted", success: true, deletBlog });
+    res.status(200).json({ message: "Blog Deleted", success: true });
   } catch (err) {
     console.log(err.message);
     res
