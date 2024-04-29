@@ -22,6 +22,6 @@ router.put("/changePassword", verifyJwt, changePassword);
 router.post("/checkUsername", checkIfUsernameAvailable);
 router.post("/checkEmail", checkIfEmailAvailable);
 router.put("/updateProfile", verifyJwt, updateUserDetails);
-router.get("/updateProfile", verifyJwt, checkifLogin);
+router.get("/refresh-token", verifyJwt, checkifLogin);
 
 module.exports = router;
