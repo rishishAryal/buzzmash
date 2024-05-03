@@ -21,6 +21,6 @@ router.put("/update/:id", verifyJwt, updateBlog);
 router.get("/getBlogFeed", getBlogs);
 router.get("/getCategory", getBlogCategory);
 router.get("/getUserBlogs", verifyJwt, getUserBlog);
-router.get("/getBlogByCategory", getBlogByCategory);
+router.post("/getBlogByCategory", getBlogByCategory);
 
 module.exports = router;
