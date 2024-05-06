@@ -138,11 +138,11 @@ const changePassword = async (req, res) => {
     const hashedPassword = await bcrypt.hash(newPassword, salt);
     user.password = hashedPassword;
     await user.save();
-    res.status(200).json({ message: "Password Changed" });
+    res.status(200).json({ message: "Password Changed", success : true });
   } catch (err) {
     res
       .status(500)
-      .json({ message: "Internal Server Error", error: err.message });
+      .json({ message: "Internal Server Error", error: err.message, success: false });
   }
 };
 
