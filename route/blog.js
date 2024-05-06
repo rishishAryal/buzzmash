@@ -15,7 +15,7 @@ const verifyJwt = require("../middleware/verifyJwt");
 
 router.post("/create-blog", verifyJwt, createBlog);
 router.get("/getAll", verifyJwt, getBlogs);
-router.get("/get/:slug", verifyJwt, getBlog);
+router.get("/get/:slug", getBlog);
 router.delete("/delete/:id", verifyJwt, deleteBlog);
 router.put("/update/:id", verifyJwt, updateBlog);
 router.get("/getBlogFeed", getBlogs);
