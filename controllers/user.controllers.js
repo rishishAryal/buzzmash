@@ -224,7 +224,7 @@ const uploadProfilePicture = async (req, res) => {
         user.profilePicture = result.secure_url;
         await user.save();
 
-        res.json({ message: "Profile picture uploaded successfully!", data: result });
+        res.json({ message: "Profile picture uploaded successfully!", success: true });
       }
     );
 
