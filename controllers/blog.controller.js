@@ -213,6 +213,9 @@ const addBlogThumbnail = async (req, res) => {
         if (!blog) {
           return res.status(404).json({ message: "Blog not found", success: false});
         }
+        if (blog.userId.toString() !== req.userId) {
+          return res.status(401).json({ message: "You are not authorized", success: false});
+        }
         blog.thumbnail = result.secure_url;
         await blog.save();
 
