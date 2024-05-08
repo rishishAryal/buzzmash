@@ -192,8 +192,10 @@ const addBlogThumbnail = async (req, res) => {
   }
   console.log("upload");
  
-  const {blogId}  = req.body
+  const {blogId}  = req.params
+  console.log(blogId);
   const blog = await Blog.findById(blogId);
+
   if (!blog) {
     return res.status(404).json({ message: "Blog not found", success: false});
   }

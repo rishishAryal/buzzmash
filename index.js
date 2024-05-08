@@ -30,8 +30,7 @@ app.use("/api/v1/blog", commentRouter);
 
 
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+
 // app.post('/profilePicture', upload.single('profilePicture'), async (req, res) => {
 //   try {
 //     if (!req.file) {
