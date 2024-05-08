@@ -4,6 +4,7 @@ const cloudinary = require('cloudinary').v2;
 const stream = require('stream');
 
 const jwt = require("jsonwebtoken");
+const { profile } = require("console");
 
 // Register a new user
 const register = async (req, res) => {
@@ -29,8 +30,10 @@ const register = async (req, res) => {
     const jwtToken = jwt.sign(
       { userId: newUser._id },
       "kPGzq3kH48aDGD9N23Fs5T8jYqHb5GXs",
-      { expiresIn: "1h" }
+      { expiresIn: "10d" }
     );
+    //expiresIn 10 days
+    // expiresIn: "10d"
     res.status(201).json({
       message: "User Registered",
       jwtToken,
@@ -95,7 +98,7 @@ const login = async (req, res) => {
     const jwtToken = jwt.sign(
       { userId: user._id },
       "kPGzq3kH48aDGD9N23Fs5T8jYqHb5GXs",
-      { expiresIn: "1h" }
+      { expiresIn: "10d" }
     );
     res
       .status(201)
@@ -214,7 +217,7 @@ const uploadProfilePicture = async (req, res) => {
       { folder: "profilePicture", resource_type: "image" },
       async (error, result) => {
         if (error) {
-          return res.status(500).json({ message: "Internal Server Error", error: error.message });
+          return res.status(500).json({ message: "Internal Server Error", error: error.message , success: false});
         }
         // Assuming `User` is your User model and you have a way to get `userId`
         const user = await User.findById(req.userId);
@@ -224,7 +227,7 @@ const uploadProfilePicture = async (req, res) => {
         user.profilePicture = result.secure_url;
         await user.save();
 
-        res.json({ message: "Profile picture uploaded successfully!", success: true });
+        res.json({ message: "Profile picture uploaded successfully!", success: true , profilePicture: result.secure_url});
       }
     );
 
@@ -232,7 +235,7 @@ const uploadProfilePicture = async (req, res) => {
     readableInstanceStream.pipe(uploadStream);
   } catch (err) {
     console.log(err.message);
-    res.status(500).json({ message: "Internal Server Error", error: err.message });
+    res.status(500).json({ message: "Internal Server Error", error: err.message, success: false});
   }
 };
 

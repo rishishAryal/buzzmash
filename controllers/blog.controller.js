@@ -1,7 +1,8 @@
 const Blog = require("../model/Blog");
 const User = require("../model/User");
 const Category = require("../model/Category");
-const { get } = require("http");
+const cloudinary = require("cloudinary").v2;
+const stream = require("stream");
 
 const createBlog = async (req, res) => {
   const { title, description, category } = req.body;
@@ -185,6 +186,51 @@ const getBlogByCategory = async (req, res) => {
   }
 };
 
+const addBlogThumbnail = async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded.' });
+  }
+  console.log("upload");
+ 
+  const {blogId}  = req.body
+  // Create a readable stream from the buffer
+  const readableInstanceStream = new stream.Readable({
+    read() {
+      this.push(req.file.buffer);
+      this.push(null); // Signal the end of the stream
+    }
+  });
+
+  try {
+    // Upload the image to Cloudinary
+    const uploadStream = cloudinary.uploader.upload_stream(
+      { folder: "blog", resource_type: "image" },
+      async (error, result) => {
+        if (error) {
+          return res.status(500).json({ message: "Internal Server Error", error: error.message, success: false});
+        }
+        const blog = await Blog.findById(blogId);
+        if (!blog) {
+          return res.status(404).json({ message: "Blog not found", success: false});
+        }
+        blog.thumbnail = result.secure_url;
+        await blog.save();
+
+        // Assuming `User` is your User model and you have a way to get `userId`
+        
+
+        res.json({ message: "blog thumbnail updated", success: true, thumbnail: result.secure_url});
+      }
+    );
+
+    // Pipe the readable stream to Cloudinary
+    readableInstanceStream.pipe(uploadStream);
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).json({ message: "Internal Server Error", error: err.message, success: false});
+  }
+};
+
 module.exports = {
   createBlog,
   getBlogs,
@@ -194,4 +240,5 @@ module.exports = {
   getBlogCategory,
   getUserBlog,
   getBlogByCategory,
+  addBlogThumbnail
 };
