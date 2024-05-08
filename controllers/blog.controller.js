@@ -193,6 +193,13 @@ const addBlogThumbnail = async (req, res) => {
   console.log("upload");
  
   const {blogId}  = req.body
+  const blog = await Blog.findById(blogId);
+  if (!blog) {
+    return res.status(404).json({ message: "Blog not found", success: false});
+  }
+  if (blog.userId.toString() !== req.userId) {
+    return res.status(401).json({ message: "You are not authorized", success: false});
+  }
   // Create a readable stream from the buffer
   const readableInstanceStream = new stream.Readable({
     read() {
@@ -209,13 +216,7 @@ const addBlogThumbnail = async (req, res) => {
         if (error) {
           return res.status(500).json({ message: "Internal Server Error", error: error.message, success: false});
         }
-        const blog = await Blog.findById(blogId);
-        if (!blog) {
-          return res.status(404).json({ message: "Blog not found", success: false});
-        }
-        if (blog.userId.toString() !== req.userId) {
-          return res.status(401).json({ message: "You are not authorized", success: false});
-        }
+      
         blog.thumbnail = result.secure_url;
         await blog.save();
 
