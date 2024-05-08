@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
-
+const multer = require("multer");
+const storage = multer.memoryStorage(); // Use memory storage for files
+const upload = multer({ storage: storage });
 const {
   register,
   login,
@@ -11,6 +13,7 @@ const {
   checkIfEmailAvailable,
   updateUserDetails,
   checkifLogin,
+  uploadProfilePicture
 } = require("../controllers/user.controllers");
 const verifyJwt = require("../middleware/verifyJwt");
 
@@ -23,5 +26,7 @@ router.post("/checkUsername", checkIfUsernameAvailable);
 router.post("/checkEmail", checkIfEmailAvailable);
 router.put("/updateProfile", verifyJwt, updateUserDetails);
 router.get("/refresh-token", checkifLogin);
+router.post('/profilePicture', upload.single('profilePicture'),verifyJwt,uploadProfilePicture);
+
 
 module.exports = router;

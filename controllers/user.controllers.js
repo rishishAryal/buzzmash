@@ -1,8 +1,9 @@
 const User = require("../model/User");
 const bcrypt = require("bcryptjs");
+const cloudinary = require('cloudinary').v2;
+const stream = require('stream');
 
 const jwt = require("jsonwebtoken");
-const { trusted } = require("mongoose");
 
 // Register a new user
 const register = async (req, res) => {
@@ -138,11 +139,15 @@ const changePassword = async (req, res) => {
     const hashedPassword = await bcrypt.hash(newPassword, salt);
     user.password = hashedPassword;
     await user.save();
-    res.status(200).json({ message: "Password Changed", success : true });
+    res.status(200).json({ message: "Password Changed", success: true });
   } catch (err) {
     res
       .status(500)
-      .json({ message: "Internal Server Error", error: err.message, success: false });
+      .json({
+        message: "Internal Server Error",
+        error: err.message,
+        success: false,
+      });
   }
 };
 
@@ -188,6 +193,49 @@ const checkifLogin = async (req, res) => {
       .json({ message: "Token is not valid", login: false });
   }
 };
+const uploadProfilePicture = async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded.' });
+  }
+  console.log("spload");
+  console.log(req.userId);
+
+  // Create a readable stream from the buffer
+  const readableInstanceStream = new stream.Readable({
+    read() {
+      this.push(req.file.buffer);
+      this.push(null); // Signal the end of the stream
+    }
+  });
+
+  try {
+    // Upload the image to Cloudinary
+    const uploadStream = cloudinary.uploader.upload_stream(
+      { folder: "profilePicture", resource_type: "image" },
+      async (error, result) => {
+        if (error) {
+          return res.status(500).json({ message: "Internal Server Error", error: error.message });
+        }
+        // Assuming `User` is your User model and you have a way to get `userId`
+        const user = await User.findById(req.userId);
+        if (!user) {
+          return res.status(404).json({ message: "User not found" });
+        }
+        user.profilePicture = result.secure_url;
+        await user.save();
+
+        res.json({ message: "Profile picture uploaded successfully!", data: result });
+      }
+    );
+
+    // Pipe the readable stream to Cloudinary
+    readableInstanceStream.pipe(uploadStream);
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).json({ message: "Internal Server Error", error: err.message });
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -197,5 +245,6 @@ module.exports = {
   checkIfUsernameAvailable,
   checkIfEmailAvailable,
   updateUserDetails,
-  checkifLogin
+  checkifLogin,
+  uploadProfilePicture
 };
