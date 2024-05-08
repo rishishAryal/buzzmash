@@ -24,7 +24,8 @@ router.put("/update/:id", verifyJwt, updateBlog);
 router.get("/getBlogFeed", getBlogs);
 router.get("/getCategory", getBlogCategory);
 router.get("/getUserBlogs", verifyJwt, getUserBlog);
-router.post("/getBlogByCategory", getBlogByCategory);s
+router.post("/getBlogByCategory", getBlogByCategory); 
+
 router.put(
   "/addBlogThumbnail",
   upload.single("thumbnail"),
