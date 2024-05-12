@@ -1,7 +1,7 @@
 const User = require("../model/User");
 const bcrypt = require("bcryptjs");
-const cloudinary = require('cloudinary').v2;
-const stream = require('stream');
+const cloudinary = require("cloudinary").v2;
+const stream = require("stream");
 
 const jwt = require("jsonwebtoken");
 const { profile } = require("console");
@@ -136,7 +136,9 @@ const changePassword = async (req, res) => {
     const user = await User.findById(req.userId);
     const checkPassword = await bcrypt.compare(oldPassword, user.password);
     if (!checkPassword) {
-      return res.status(400).json({ message: "Incorrect Password" });
+      return res
+        .status(400)
+        .json({ message: "Incorrect Password", success: true });
     }
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(newPassword, salt);
@@ -144,13 +146,11 @@ const changePassword = async (req, res) => {
     await user.save();
     res.status(200).json({ message: "Password Changed", success: true });
   } catch (err) {
-    res
-      .status(500)
-      .json({
-        message: "Internal Server Error",
-        error: err.message,
-        success: false,
-      });
+    res.status(500).json({
+      message: "Internal Server Error",
+      error: err.message,
+      success: false,
+    });
   }
 };
 
@@ -198,7 +198,7 @@ const checkifLogin = async (req, res) => {
 };
 const uploadProfilePicture = async (req, res) => {
   if (!req.file) {
-    return res.status(400).json({ error: 'No file uploaded.' });
+    return res.status(400).json({ error: "No file uploaded." });
   }
   console.log("spload");
   console.log(req.userId);
@@ -208,7 +208,7 @@ const uploadProfilePicture = async (req, res) => {
     read() {
       this.push(req.file.buffer);
       this.push(null); // Signal the end of the stream
-    }
+    },
   });
 
   try {
@@ -217,7 +217,13 @@ const uploadProfilePicture = async (req, res) => {
       { folder: "profilePicture", resource_type: "image" },
       async (error, result) => {
         if (error) {
-          return res.status(500).json({ message: "Internal Server Error", error: error.message , success: false});
+          return res
+            .status(500)
+            .json({
+              message: "Internal Server Error",
+              error: error.message,
+              success: false,
+            });
         }
         // Assuming `User` is your User model and you have a way to get `userId`
         const user = await User.findById(req.userId);
@@ -227,7 +233,11 @@ const uploadProfilePicture = async (req, res) => {
         user.profilePicture = result.secure_url;
         await user.save();
 
-        res.json({ message: "Profile picture uploaded successfully!", success: true , profilePicture: result.secure_url});
+        res.json({
+          message: "Profile picture uploaded successfully!",
+          success: true,
+          profilePicture: result.secure_url,
+        });
       }
     );
 
@@ -235,7 +245,13 @@ const uploadProfilePicture = async (req, res) => {
     readableInstanceStream.pipe(uploadStream);
   } catch (err) {
     console.log(err.message);
-    res.status(500).json({ message: "Internal Server Error", error: err.message, success: false});
+    res
+      .status(500)
+      .json({
+        message: "Internal Server Error",
+        error: err.message,
+        success: false,
+      });
   }
 };
 
@@ -249,5 +265,5 @@ module.exports = {
   checkIfEmailAvailable,
   updateUserDetails,
   checkifLogin,
-  uploadProfilePicture
+  uploadProfilePicture,
 };
