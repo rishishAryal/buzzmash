@@ -1,4 +1,6 @@
 const User = require("../model/User");
+const Blog = require("../model/Blog");
+const Comment = require("../model/Comment");
 const bcrypt = require("bcryptjs");
 const cloudinary = require("cloudinary").v2;
 const stream = require("stream");
@@ -217,19 +219,18 @@ const uploadProfilePicture = async (req, res) => {
       { folder: "profilePicture", resource_type: "image" },
       async (error, result) => {
         if (error) {
-          return res
-            .status(500)
-            .json({
-              message: "Internal Server Error",
-              error: error.message,
-              success: false,
-            });
+          return res.status(500).json({
+            message: "Internal Server Error",
+            error: error.message,
+            success: false,
+          });
         }
         // Assuming `User` is your User model and you have a way to get `userId`
         const user = await User.findById(req.userId);
         if (!user) {
           return res.status(404).json({ message: "User not found" });
         }
+
         user.profilePicture = result.secure_url;
         await user.save();
 
@@ -245,13 +246,11 @@ const uploadProfilePicture = async (req, res) => {
     readableInstanceStream.pipe(uploadStream);
   } catch (err) {
     console.log(err.message);
-    res
-      .status(500)
-      .json({
-        message: "Internal Server Error",
-        error: err.message,
-        success: false,
-      });
+    res.status(500).json({
+      message: "Internal Server Error",
+      error: err.message,
+      success: false,
+    });
   }
 };
 

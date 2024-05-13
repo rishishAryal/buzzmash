@@ -29,8 +29,8 @@ const createComment = async (req, res) => {
   } catch (err) {
     console.log(err.message);
     res
-    .status(500)
-    .json({ message: "Internal Server Error", error: err.message });
+      .status(500)
+      .json({ message: "Internal Server Error", error: err.message });
   }
 };
 
@@ -43,6 +43,12 @@ const getComments = async (req, res) => {
         .status(200)
         .json({ message: "All Comments", comments: [], success: true });
     }
+    for (let i = 0; i < comments.length; i++) {
+      const comment = comments[i];
+      const user = await User.findById(comment.userId);
+      comment.profilePicture = user.profilePicture;
+      await comment.save();
+    }
     res.status(200).json({
       message: "All Comments",
       comments: comments,
@@ -51,8 +57,8 @@ const getComments = async (req, res) => {
   } catch (err) {
     console.log(err.message);
     res
-    .status(500)
-    .json({ message: "Internal Server Error", error: err.message });
+      .status(500)
+      .json({ message: "Internal Server Error", error: err.message });
   }
 };
 
@@ -101,9 +107,21 @@ const updateComment = async (req, res) => {
   }
 };
 
+// const setAuthorProfile = async (req, res) => {
+//   const comments = await Comment.find();
+//   for (let i = 0; i < comments.length; i++) {
+//     const blog = comments[i];
+//     const user = await User.findById(blog.userId);
+//     blog.profilePicture = user.profilePicture;
+//     await blog.save();
+//   }
+//   res.status(200).json({ message: "Author Profile Updated", success: true });
+// };
+
 module.exports = {
   createComment,
   getComments,
   deleteComment,
   updateComment,
+  // setAuthorProfile,
 };
