@@ -52,9 +52,9 @@ const getBlogs = async (req, res) => {
 
     const token = req.header("Authorization");
     if (!token) {
-      return res
-        .status(200)
-        .json({ message: "All Blogs", blogs: blogs, success: true });
+      // return res
+      //   .status(200)
+      //   .json({ message: "All Blogs", blogs: blogs, success: true });
     } else {
       const bearer = token.split(" ")[1];
       const decoded = jwt.verify(bearer, "kPGzq3kH48aDGD9N23Fs5T8jYqHb5GXs");
@@ -222,6 +222,33 @@ const getBlogByCategory = async (req, res) => {
   try {
     const blogs = await Blog.find({ category: category });
     const count = blogs.length;
+    const token = req.header("Authorization");
+    if (!token) {
+    } else {
+      const bearer = token.split(" ")[1];
+      const decoded = jwt.verify(bearer, "kPGzq3kH48aDGD9N23Fs5T8jYqHb5GXs");
+      req.userId = decoded.userId;
+
+      if (req.userId) {
+        const user = await User.findById(req.userId);
+        for (let i = 0; i < blogs.length; i++) {
+          const blog = blogs[i];
+          const like = await Like.findOne({
+            blogId: blog._id,
+            userId: req.userId,
+          });
+          if (like) {
+            blog.hasLiked = true;
+          }
+        }
+      }
+    }
+
+    for (let i = 0; i < blogs.length; i++) {
+      const user = await User.findById(blogs[i].userId);
+      blogs[i].authorProfile = user.profilePicture;
+    }
+
     res.status(200).json({
       message: "All Blogs",
       blogs: blogs,
