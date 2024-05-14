@@ -1,5 +1,6 @@
 const Blog = require("../model/Blog");
 const User = require("../model/User");
+const Comment = require("../model/Comment");
 const Category = require("../model/Category");
 const Like = require("../model/Like");
 const cloudinary = require("cloudinary").v2;
@@ -117,6 +118,9 @@ const deleteBlog = async (req, res) => {
           .json({ message: "You are not authorized", success: false });
       }
       const deletBlog = await Blog.findByIdAndDelete(id);
+      // delete like and comment
+      await Like.deleteMany({ blogId: id });
+      await Comment.deleteMany({ blogId: id });
     } else {
       return res
         .status(404)
