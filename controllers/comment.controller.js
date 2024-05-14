@@ -70,7 +70,8 @@ const deleteComment = async (req, res) => {
       return res.status(400).json({ message: "Comment Not Found" });
     }
     const blog = await Blog.findById(comment.blogId);
-    if (comment.userId !== req.userId) {
+    console.log(comment.userId.toString(), req.userId);
+    if (comment.userId.toString() !== req.userId) {
       return res.status(401).json({ message: "Unauthorized" });
     }
     await Comment.findByIdAndDelete(commentId);
@@ -93,7 +94,7 @@ const updateComment = async (req, res) => {
     if (!iscommentExist) {
       return res.status(400).json({ message: "Comment Not Found" });
     }
-    if (iscommentExist.userId !== req.userId) {
+    if (iscommentExist.userId.toString() !== req.userId) {
       return res.status(401).json({ message: "Unauthorized" });
     }
     iscommentExist.comment = comment || iscommentExist.comment;
