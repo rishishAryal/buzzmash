@@ -15,7 +15,7 @@ const {
 router.post("/comment", verifyJwt, createComment);
 router.get("/getComments/:blogId", verifyJwt, getComments);
 router.delete("/deleteComment/:commentId", verifyJwt, deleteComment);
-router.put("/update/:commentId", verifyJwt, updateComment);
+router.put("/updateComment/:commentId", verifyJwt, updateComment);
 // router.get("/setAuthorProfileComment", setAuthorProfile);
 
 module.exports = router;
