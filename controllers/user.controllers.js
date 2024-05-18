@@ -56,7 +56,7 @@ const checkIfUsernameAvailable = async (req, res) => {
     const user = await User.findOne({ username });
     if (user) {
       return res
-        .status(400)
+        .status(200)
         .json({ message: "Username Already Exists", isAvailable: false });
     }
     res.status(200).json({ message: "Username Available", isAvailable: true });
@@ -74,7 +74,7 @@ const checkIfEmailAvailable = async (req, res) => {
     const user = await User.findOne({ email });
     if (user) {
       return res
-        .status(400)
+        .status(200)
         .json({ message: "Email Already Exists", isAvailable: false });
     }
     res.status(200).json({ message: "Email Available", isAvailable: true });
