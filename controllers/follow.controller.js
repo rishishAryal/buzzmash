@@ -54,14 +54,13 @@ const unFollow = async (req, res) => {
         .status(400)
         .json({ message: "You cannot unfollow yourself", success: false });
     }
-    const follow = await Follow.findOne({
+    const follow = await Follow.findOneAndDelete({
       follower: userId,
       following,
     });
     if (!follow) {
       return res.status(200).json({ message: "Not Following", success: false });
     }
-    await follow.delete();
 
     res.status(200).json({ message: "Unfollowed", success: true });
   } catch (e) {
@@ -78,16 +77,44 @@ const getFollowers = async (req, res) => {
     const userId = req.userId;
     const followers = await Follow.find({ following: userId });
 
-    console.log(followers[0].following.toString());
+    var followersDetail = [];
+
+    // console.log(followers[0].following.toString());
 
     for (let i = 0; i < followers.length; i++) {
-      var followerId = followers[i].follower.toString();
-      if (followerId == userId) {
+      //array of user details of followers only put
+      const follower = await User.findById(followers[i].follower);
+
+      const isFollowing = await Follow.findOne({
+        follower: userId,
+        following: followers[i].follower,
+      });
+      if (isFollowing) {
         followers[i].isFollowing = true;
+        followersDetail.push({
+          id: follower._id,
+          username: follower.username,
+          email: follower.email,
+          profilePicture: follower.profilePicture,
+          isFollowing: true,
+        });
+      } else {
+        followers[i].isFollowing = false;
+        followersDetail.push({
+          id: follower._id,
+          username: follower.username,
+          email: follower.email,
+          profilePicture: follower.profilePicture,
+          isFollowing: false,
+        });
       }
     }
 
-    res.status(200).json({ followers, success: true, message: "Followers" });
+    res.status(200).json({
+      success: true,
+      message: "Followers",
+      followers: followersDetail,
+    });
   } catch (e) {
     console.log(e.message);
     res.status(500).json({
@@ -100,14 +127,26 @@ const getFollowers = async (req, res) => {
 const getFollowing = async (req, res) => {
   try {
     const userId = req.userId;
-    const following = await Follow.find({ follower: userId }).populate(
-      "following"
-    );
-    //check while fetching the following of a user if that the user is Following his following and if is following then set isFollowing to true
-    following.forEach((follow) => {
-      follow.isFollowing = true;
+    const following = await Follow.find({ follower: userId });
+    // console.log(following);
+    var followingDetails = [];
+
+    for (let i = 0; i < following.length; i++) {
+      const follwingUser = await User.findById(following[i].following);
+
+      followingDetails.push({
+        id: follwingUser._id,
+        username: follwingUser.username,
+        email: follwingUser.email,
+        profilePicture: follwingUser.profilePicture,
+        isFollowing: true,
+      });
+    }
+    res.status(200).json({
+      following: followingDetails,
+      success: true,
+      message: "Following",
     });
-    res.status(200).json({ following, success: true, message: "Following" });
   } catch (e) {
     console.log(e.message);
     res.status(500).json({
