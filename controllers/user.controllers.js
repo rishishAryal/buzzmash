@@ -266,6 +266,10 @@ const searchUser = async (req, res) => {
     });
     // also check for is the user following the searched user
     for (let i = 0; i < user.length; i++) {
+      //skip the user itself
+      if (user[i]._id.toString() === req.userId) {
+        continue;
+      }
       const isFollowing = await Follow.findOne({
         follower: req.userId,
         following: user[i]._id,
