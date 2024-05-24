@@ -13,6 +13,7 @@ const {
   getUserBlog,
   getBlogByCategory,
   addBlogThumbnail,
+  getFeedOfFollowedUser,
   // setAuthorProfile,
 } = require("../controllers/blog.controller");
 const verifyJwt = require("../middleware/verifyJwt");
@@ -34,5 +35,6 @@ router.post(
   verifyJwt,
   addBlogThumbnail
 );
+router.get("/getFeedOfFollowedUser", verifyJwt, getFeedOfFollowedUser);
 
 module.exports = router;

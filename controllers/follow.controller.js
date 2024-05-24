@@ -29,7 +29,17 @@ const follow = async (req, res) => {
       follower: userId,
       following,
     });
+s
     await newFollow.save();
+    //get the follwing user details
+
+    user.followerCount = user.followerCount + 1;
+    await user.save();
+
+    const ownUser = await User.findById(userId);
+    ownUser.followingCount = ownUser.followingCount + 1;
+    await ownUser.save();
+
     res.status(201).json({ message: "Followed", success: true });
   } catch (e) {
     console.log(e.message);
@@ -61,6 +71,12 @@ const unFollow = async (req, res) => {
     if (!follow) {
       return res.status(200).json({ message: "Not Following", success: false });
     }
+    user.followerCount = user.followerCount - 1;
+    await user.save();
+
+    const ownUser = await User.findById(userId);
+    ownUser.followingCount = ownUser.followingCount - 1;
+    await ownUser.save();
 
     res.status(200).json({ message: "Unfollowed", success: true });
   } catch (e) {

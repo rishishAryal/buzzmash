@@ -2,6 +2,7 @@ const Blog = require("../model/Blog");
 const User = require("../model/User");
 const Comment = require("../model/Comment");
 const Category = require("../model/Category");
+const Follow = require("../model/Follow");
 const Like = require("../model/Like");
 const cloudinary = require("cloudinary").v2;
 const stream = require("stream");
@@ -330,17 +331,23 @@ const addBlogThumbnail = async (req, res) => {
   }
 };
 
-// find blog and set the author profile
-// const setAuthorProfile = async (req, res) => {
-//   const blogs = await Blog.find();
-//   for (let i = 0; i < blogs.length; i++) {
-//     const blog = blogs[i];
-//     const user = await User.findById(blog.userId);
-//     blog.authorProfile = user.profilePicture;
-//     await blog.save();
-//   }
-//   res.status(200).json({ message: "Author Profile Updated", success: true });
-// };
+const getFeedOfFollowedUser = async (req, res) => {
+  try {
+    const userId = req.userId;
+    //get user following
+    const following = await Follow.find({ follower: userId });
+    const followingId = following.map((follow) => follow.following);
+    //get blog of following
+    const blogs = await Blog.find({ userId: { $in: followingId } });
+    res
+      .status(200)
+      .json({ blogs, success: true, message: "Feed of following user" });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: err.message });
+  }
+};
 
 module.exports = {
   createBlog,
@@ -352,5 +359,6 @@ module.exports = {
   getUserBlog,
   getBlogByCategory,
   addBlogThumbnail,
+  getFeedOfFollowedUser,
   // setAuthorProfile,
 };

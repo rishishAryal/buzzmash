@@ -320,5 +320,5 @@ module.exports = {
   updateUserDetails,
   checkifLogin,
   uploadProfilePicture,
-  searchUser,
+  searchUser
 };
