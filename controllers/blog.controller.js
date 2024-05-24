@@ -339,6 +339,18 @@ const getFeedOfFollowedUser = async (req, res) => {
     const followingId = following.map((follow) => follow.following);
     //get blog of following
     const blogs = await Blog.find({ userId: { $in: followingId } });
+
+    // foreach blog check if user has liked it
+    for (let i = 0; i < blogs.length; i++) {
+      const blog = blogs[i];
+      const like = await Like.findOne({
+        blogId: blog._id,
+        userId: userId,
+      });
+      if (like) {
+        blog.hasLiked = true;
+      }
+    }
     res
       .status(200)
       .json({ blogs, success: true, message: "Feed of following user" });
