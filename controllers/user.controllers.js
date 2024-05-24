@@ -1,6 +1,5 @@
 const User = require("../model/User");
-const Blog = require("../model/Blog");
-const Comment = require("../model/Comment");
+const Follow = require("../model/Follow");
 const bcrypt = require("bcryptjs");
 const cloudinary = require("cloudinary").v2;
 const stream = require("stream");
@@ -254,6 +253,50 @@ const uploadProfilePicture = async (req, res) => {
   }
 };
 
+const searchUser = async (req, res) => {
+  const { search } = req.body;
+  // search user name and username and return the user
+  try {
+    const userDTO = [];
+    const user = await User.find({
+      $or: [
+        { name: { $regex: search, $options: "i" } },
+        { username: { $regex: search, $options: "i" } },
+      ],
+    });
+    // also check for is the user following the searched user
+    for (let i = 0; i < user.length; i++) {
+      const isFollowing = await Follow.findOne({
+        follower: req.userId,
+        following: user[i]._id,
+      });
+      if (isFollowing) {
+        userDTO.push({
+          id: user[i]._id,
+          name: user[i].name,
+          username: user[i].username,
+          profilePicture: user[i].profilePicture,
+          isFollowing: true,
+        });
+      } else {
+        userDTO.push({
+          id: user[i]._id,
+          name: user[i].name,
+          username: user[i].username,
+          profilePicture: user[i].profilePicture,
+          isFollowing: false,
+        });
+      }
+    }
+
+    res.status(200).json({ message: "User Fetched", user: userDTO });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: err.message });
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -265,4 +308,5 @@ module.exports = {
   updateUserDetails,
   checkifLogin,
   uploadProfilePicture,
+  searchUser,
 };
