@@ -289,7 +289,9 @@ const searchUser = async (req, res) => {
       }
     }
 
-    res.status(200).json({ message: "User Fetched", user: userDTO });
+    res
+      .status(200)
+      .json({ message: "User Fetched", user: userDTO, success: true });
   } catch (err) {
     res
       .status(500)
