@@ -29,7 +29,7 @@ const follow = async (req, res) => {
       follower: userId,
       following,
     });
-s
+
     await newFollow.save();
     //get the follwing user details
 
