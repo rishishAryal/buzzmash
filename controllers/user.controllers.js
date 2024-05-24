@@ -115,6 +115,12 @@ const login = async (req, res) => {
 const getUserProfile = async (req, res) => {
   try {
     const user = await User.findById(req.userId);
+    //get total followers and following
+    const followers = await Follow.find({ following: req.userId });
+    const following = await Follow.find({ follower: req.userId });
+    user.followerCount = followers.length;
+    user.followingCount = following.length;
+    await user.save();
     res.status(200).json({ message: "User Profile Fetched", profile: user });
   } catch (err) {
     res.json(err);
