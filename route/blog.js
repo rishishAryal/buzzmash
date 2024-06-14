@@ -31,6 +31,7 @@ router.post("/getBlogByCategory", getBlogByCategory);
 
 router.post(
   "/addBlogThumbnail/:blogId",
+  upload.single("thumbnail"),
   verifyJwt,
   addBlogThumbnail
 );
